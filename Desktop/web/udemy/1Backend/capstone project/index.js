@@ -14,48 +14,58 @@ app.use(express.static("public"));
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
+var userIsAuthorised = false;
 app.get("/" , (req , res)=>{
-  res.render("login.ejs");
+  res.render("login.ejs");  
+
 });
 
 
-var myPassword ="" ;
-var myUser_name = "";
-var myEmail = "";
-function passwordChecker(req, res, next) {
-  console.log(req.body);
 
-   myPassword = req.body["logpass"];
-
-   myEmail = req.body["logemail"];
-
-  
-  next();
-}
+// function passwordCheck(req, res, next) {
+//   const { password } = req.body;
+//   if (password === "thekinginnorth") {
+//     userIsAuthorised = true;
+//   }
+//   next();
+// }
+// app.use(passwordCheck);
 
 
-app.use(passwordChecker);
-
-app.post("/submit" , (req , res)=>{
-  
 
 
-  // app.use(authentication(myEmail , myPassword));
+app.post("/login" , (req , res)=>{
+  const  password  = req.body["password"];
 
 
+  //  app.use(authentication(myEmail , myPassword));
+
+// app.use(passwordChecker);
  
-  if ("jonsnow@gmail.com" === myEmail && "thekinginnorth" === myPassword  ) {
-    res.render("index.ejs");
-    // console.log( req.body["logpass"])
-    
-  }
-  else{
+  if (password === "123") {
+     userIsAuthorised = true;
+    res.redirect("/blog");
+  } else {
     res.render("login.ejs");
-    // prompt("incorrect password");
   }
+});
 
+  // if (userIsAuthorised ) {
+  //   res.render("/blog");
+  //   // console.log( req.body["logpass"])
+    
+  // }
+  // else{
+  //   res.render("login.ejs");
+  //   // prompt("incorrect password");
+  // }
+
+  
+
+  app.get("/blog", (req , res )=>{
+     if (!userIsAuthorised) return res.redirect("/");
+  res.render("index.ejs");
   })
-
 
 
 
@@ -68,4 +78,3 @@ app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
- 
